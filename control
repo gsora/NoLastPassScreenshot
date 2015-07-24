@@ -1,9 +1,9 @@
 Package: me.urandom.nolastpassscreenshot
 Name: NoLastPassScreenshot
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 0.2
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
-Maintainer: Gianguido Sorà
-Author: Gianguido Sorà
+Description: Disable iOS's screenshot ability when LastPass is opened.
+Maintainer: Gianguido "plk" Sorà
+Author: Gianguido "plk" Sorà
 Section: Tweaks

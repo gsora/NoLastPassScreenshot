@@ -23,26 +23,32 @@
 
 - (void)saveScreenshot:(_Bool)arg1 {
 
-  // is LastPass opened?
   SBApplication *frontApp = [(SpringBoard*)[UIApplication sharedApplication] _accessibilityFrontMostApplication]; 
   NSString *currentAppID = [frontApp bundleIdentifier];
 
-  if(![currentAppID isEqualToString:@"com.lastpass.ilastpass"]) {
-    NSLog(@"Current app is not LastPass, screenshot is OK");
-    %orig(arg1);
-  } else {
-    BBBulletinRequest* banner = [[%c(BBBulletinRequest) alloc] init];
-    [banner setTitle: @"NoLastPassScreenshot"];
-    [banner setMessage: @"LastPass is opened, screenshot disabled"];
-    [banner setDate: [NSDate date]];
-    [banner setSectionID: @"com.apple.camera"];
-    if([%c(SBBulletinBannerController) instancesRespondToSelector:@selector(observer:addBulletin:forFeed:playLightsAndSirens:withReply:)]) {
-    [(SBBulletinBannerController *)[%c(SBBulletinBannerController) sharedInstance] observer:nil addBulletin:banner forFeed:2 playLightsAndSirens:YES withReply:nil];
+  BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"NLPSEnabled"];
+
+  if([currentAppID isEqualToString:@"com.lastpass.ilastpass"]) {
+    if(enabled == 0) {
+      NSLog(@"NoLastPassScreenshot --> Current app is LastPass but Settings tell me to screen, kk");
+      %orig(arg1);
     } else {
-      [(SBBulletinBannerController *)[%c(SBBulletinBannerController) sharedInstance] observer:nil addBulletin:banner forFeed:2];
+      BBBulletinRequest* banner = [[%c(BBBulletinRequest) alloc] init];
+      [banner setTitle: @"NoLastPassScreenshot"];
+      [banner setMessage: @"LastPass is opened, screenshot disabled"];
+      [banner setDate: [NSDate date]];
+      [banner setSectionID: @"com.apple.camera"];
+      if([%c(SBBulletinBannerController) instancesRespondToSelector:@selector(observer:addBulletin:forFeed:playLightsAndSirens:withReply:)]) {
+        [(SBBulletinBannerController *)[%c(SBBulletinBannerController) sharedInstance] observer:nil addBulletin:banner forFeed:2 playLightsAndSirens:YES withReply:nil];
+      } else {
+        [(SBBulletinBannerController *)[%c(SBBulletinBannerController) sharedInstance] observer:nil addBulletin:banner forFeed:2];
+      }
+      [banner release]; 
+      NSLog(@"NoLastPassScreenshot --> Current app IS LastPass, no screenshot");
     }
-    [banner release]; 
-    NSLog(@"Current app IS LastPass, no screenshot");
+  } else {
+    NSLog(@"NoLastPassScreenshot --> Current app is not LastPass, screenshot is OK");
+    %orig(arg1);
   }
 
 }
