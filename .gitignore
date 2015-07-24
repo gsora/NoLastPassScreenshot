@@ -16,6 +16,11 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+
+# Theos ignores
+.theos
+_
+obj
 *.deb
 # CocoaPods
 #
